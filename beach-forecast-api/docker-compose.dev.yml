@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  beach-forecast-db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    container_name: beach-forecast-db
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: beach-forecast-db
+
+  beach-forecast-cache:
+    image: redis/redis-stack:latest
+    container_name: beach-forecast-cache
+    environment:
+      REDIS_ARGS: --requirepass devpass
+    ports:
+      - 6379:6379
+      - 8001:8001
+
+  beach-forecast-server:
+    image: beach-forecast/spring-api:latest
+    container_name: beach-forecast-server
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - beach-forecast-db
+      - beach-forecast-cache
