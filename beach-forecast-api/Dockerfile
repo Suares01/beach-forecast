@@ -1,14 +1,10 @@
-FROM --platform=linux/amd64 eclipse-temurin:17-jdk-focal
+FROM --platform=linux/amd64 maven as build
 
-FROM --platform=linux/amd64 maven
+COPY . .
 
-ARG DATASOURCE_URL
-ARG DATASOURCE_USERNAME
-ARG DATASOURCE_PASSWORD
-ARG CACHE_PASSWORD
-ARG CACHE_HOST
-ARG CACHE_PORT
-ARG JWT_SECRET
+RUN mvn clean package -D skipTests
+
+FROM --platform=linux/amd64 openjdk:20-jdk-slim
 
 ENV DATASOURCE_URL=${DATASOURCE_URL}
 ENV DATASOURCE_USERNAME=${DATASOURCE_USERNAME}
@@ -18,12 +14,8 @@ ENV CACHE_HOST=${CACHE_HOST}
 ENV CACHE_PORT=${CACHE_PORT}
 ENV JWT_SECRET=${JWT_SECRET}
 
-COPY . /app
-
-WORKDIR /app
-
-RUN mvn clean package
-
-CMD ["java", "-jar", "target/beach-forecast-api-0.0.1-SNAPSHOT.jar"]
+COPY --from=build /target/beach-forecast-api-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
