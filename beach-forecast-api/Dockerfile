@@ -17,6 +17,6 @@ ENV PORT=${PORT}
 
 COPY --from=build /target/beach-forecast-api-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE PORT
+EXPOSE ${PORT}
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
