@@ -1,0 +1,281 @@
+= Beach Forecast Docs
+Lucas Suares <suares_silva.01@hotmail.com>
+v1.0, 2023-10-03
+:toc: left
+:homepage: https://example.org
+
+== Overview
+
+Essa é a REST API reference para a Beach Forecast REST API.
+
+=== URI scheme
+
+----
+http://localhost:8080
+----
+
+For example http://localhost:8080/users
+
+== Resources
+
+=== Users
+
+==== GET /users/me
+
+.request
+include::{snippets}/should_be_able_get_user_data/http-request.adoc[]
+
+.response
+include::{snippets}/should_be_able_get_user_data/http-response.adoc[]
+
+=== Beaches
+
+==== GET /beaches
+
+.request
+include::{snippets}/should_return_a_list_with_user_beaches/http-request.adoc[]
+
+.response
+include::{snippets}/should_return_a_list_with_user_beaches/http-response.adoc[]
+
+==== POST /beaches
+
+.request
+include::{snippets}/should_be_able_to_save_a_beach/http-request.adoc[]
+
+.response
+include::{snippets}/should_be_able_to_save_a_beach/http-response.adoc[]
+
+=== Forecasts
+
+==== GET /forecasts
+
+.request
+include::{snippets}/should_be_able_to_process_forecasts/http-request.adoc[]
+
+.response
+include::{snippets}/should_be_able_to_process_forecasts/http-response.adoc[]
+
+== References
+
+=== UserData
+
+[cols="1,1"]
+|===
+|Name	 |Type
+
+|id
+|String
+
+|username
+|String
+
+|enabled
+|Boolean
+
+|emailVerified
+|Boolean
+
+|email
+|String
+
+|firstName
+|String
+
+|lastName
+|String
+|===
+
+=== BeachRepresentation
+
+[cols="1,1"]
+|===
+|Name	 |Type
+
+|id
+|String
+
+|name
+|String
+
+|lat
+|Float
+
+|lng
+|Float
+
+|userId
+|string
+
+|position
+|Value of <<_position,Position>>
+
+|createdAt
+|String
+|===
+
+=== Rating
+
+[cols="1,1"]
+|===
+|Name	 |Type
+
+|id
+|String
+
+|name
+|String
+
+|type
+|Value of <<_ratingtype,RatingType>>
+
+|criteria
+|Set of <<_criterion,Criterion>>
+
+|userId
+|string
+
+|createdAt
+|String
+|===
+
+=== Criterion
+
+[cols="1,1"]
+|===
+|Name	 |Type
+
+|id
+|String
+
+|name
+|String
+
+|type
+|Value of <<_criteriontype,CriterionType>>
+
+|weight
+|Float
+
+|createdAt
+|String
+|===
+
+=== Forecast
+
+[cols="1,1"]
+|===
+|Name	 |Type
+
+|time
+|String
+
+|swellDirection
+|Integer
+
+|swellHeight
+|Float
+
+|swellPeriod
+|Float
+
+|waveDirection
+|Integer
+
+|waveHeight
+|Float
+
+|wavePeriod
+|Float
+
+|windDirection
+|Integer
+
+|windSpeed
+|Float
+
+|visibility
+|Float
+
+|temperature
+|Float
+
+|beach
+|<<_beachrepresentation,BeachRepresentation>>
+
+|ratings
+|List of <<_rating,Rating>>
+|===
+
+=== TimeForecast
+
+[cols="1,1"]
+|===
+|Name	 |Type
+
+|time
+|String
+
+|forecasts
+|List of <<_forecast,Forecast>>
+|===
+
+=== Position
+
+[cols="1,1"]
+|===
+|Value |Type
+
+|NORTH
+|String
+
+|SOUTH
+|String
+
+|EAST
+|String
+
+|WEST
+|String
+|===
+
+=== RatingType
+
+[cols="1,1"]
+|===
+|Value |Type
+
+|SURFER
+|String
+
+|BEACHGOER
+|String
+|===
+
+=== CriterionType
+
+[cols="1,1"]
+|===
+|Value |Type
+
+|WAVE_HEIGHT
+|String
+
+|WAVE_DIRECTION
+|String
+
+|WAVE_PERIOD
+|String
+
+|SWELL_HEIGHT
+|String
+
+|SWELL_DIRECTION
+|String
+
+|SWELL_PERIOD
+|String
+
+|WIND_DIRECTION
+|String
+|===

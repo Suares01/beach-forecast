@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  beach-forecast-db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    container_name: beach-forecast-db
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: beach-forecast-db
+
+  beach-forecast-cache:
+    image: redis/redis-stack:latest
+    container_name: beach-forecast-cache
+    environment:
+      REDIS_ARGS: --requirepass devpass
+    ports:
+      - 6379:6379
+      - 8001:8001
+
+  beach-forecast-keycloak:
+    image: beach-forecast/keycloak
+    container_name: beach-forecast-keycloak
+    build: keycloak
+    env_file: keycloak/.env
+    ports:
+      - 8081:8080
+    depends_on:
+      - beach-forecast-db
+
+  # beach-forecast-api-gateway:
+  #   image: beach-forecast/spring-api-gateway:latest
+  #   container_name: beach-forecast-api-gateway
+  #   build: beach-forecast-api-gateway
+  #   env_file: beach-forecast-api-gateway/.env
+  #   ports:
+  #     - 8082:8082
+  #   depends_on:
+  #     - beach-forecast-cache
+
+  # beach-forecast-api:
+  #   image: beach-forecast/spring-api:latest
+  #   container_name: beach-forecast-api
+  #   build: beach-forecast-api
+  #   ports:
+  #     - 8080:8080
+  #   env_file: beach-forecast-api/.env
+  #   depends_on:
+  #     - beach-forecast-db
+  #     - beach-forecast-cache
+  #     - beach-forecast-api-gateway

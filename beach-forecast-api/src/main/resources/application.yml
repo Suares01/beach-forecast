@@ -1,0 +1,76 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          issuer-uri: ${api.security.keycloak-base-url}/realms/${api.security.keycloak-realm}
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        '[format_sql]': true
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    password: ${DATASOURCE_PASSWORD:devpass}
+    driver-class-name: org.postgresql.Driver
+    username: ${DATASOURCE_USERNAME:devuser}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/beach-forecast-db}
+
+  data:
+    redis:
+      password: ${CACHE_PASSWORD:devpass}
+      port: ${CACHE_PORT:6379}
+      host: ${CACHE_HOST:localhost}
+      repositories:
+        enabled: false
+
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+
+bucket4j:
+  enabled: true
+  filters:
+  - cache-name: ${api.rate-limit.cache-name}
+    url: .*
+    filter-order: 100
+    rate-limits:
+    - execute-condition: "@authorizationService.isAuthenticated()"
+      cache-key: "@authorizationService.getUserId()"
+      num-tokens: 1
+      bandwidths:
+      - capacity: 20
+        time: 10
+        unit: seconds
+        refill-speed: greedy
+    - execute-condition: "@authorizationService.isUnauthenticated()"
+      cache-key: "getRemoteAddr()"
+      num-tokens: 1
+      bandwidths:
+      - capacity: 20
+        time: 10
+        unit: seconds
+        refill-speed: greedy
+
+server:
+  port: ${PORT:8080}
+
+api:
+  rate-limit:
+    cache-name: rate-limiting
+  security:
+    keycloak-realm: ${KEYCLOAK_REALM:dev}
+    client-id: ${KEYCLOAK_CLIENT_ID:beach_forecast_api}
+    keycloak-base-url: ${KEYCLOAK_BASE_URL:http://localhost:8081}
+    admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+    admin-client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:mNMOISg9e0NbiRqL8cCFdnkjnKJNsMH0}
+    admin-username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+    admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}

@@ -1,0 +1,122 @@
+server:
+  port: ${PORT}
+
+spring:
+
+  application:
+    name: ratelimiter
+
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+
+  cloud:
+    gateway:
+      routes:
+      - id: login
+        uri: ${API_BASE_URL}/auth/login
+        predicates:
+        - Path=/auth/login
+        - Method=POST
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: register
+        uri: ${API_BASE_URL}/auth/register
+        predicates:
+        - Path=/auth/register
+        - Method=POST
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: user-data
+        uri: ${API_BASE_URL}/users/me
+        predicates:
+        - Path=/users/me
+        - Method=GET
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: user-data
+        uri: ${API_BASE_URL}/users
+        predicates:
+        - Path=/users
+        - Method=DELETE
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: user-data
+        uri: ${API_BASE_URL}/users
+        predicates:
+        - Path=/users
+        - Method=PUT
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: get-user-beaches
+        uri: ${API_BASE_URL}/beaches
+        predicates:
+        - Path=/beaches
+        - Method=GET
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: save-beach
+        uri: ${API_BASE_URL}/beaches
+        predicates:
+        - Path=/beaches
+        - Method=POST
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+      - id: forecasts
+        uri: ${API_BASE_URL}/forecasts
+        predicates:
+        - Path=/forecasts
+        - Method=GET
+        filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 5
+            redis-rate-limiter.requestedTokens: 1
+
+  data:
+    redis:
+      port: ${CACHE_PORT}
+      host: ${CACHE_HOST}
+      password: ${CACHE_PASSWORD}
+      repositories:
+        enabled: false
+
+api:
+  base-url: ${API_BASE_URL}

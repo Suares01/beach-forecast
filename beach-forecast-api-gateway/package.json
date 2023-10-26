@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "test": "mvn test",
+    "prepare": "cd .. && husky install beach-forecast-api-gateway/.husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1"
+  },
+  "lint-staged": {
+    "*.java": [
+      "npm run test"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./beach-forecast-api-gateway/node_modules/cz-conventional-changelog"
+    }
+  }
+}
